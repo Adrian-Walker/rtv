@@ -2,6 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
 const expressJWT = require('express-jwt');
+require('dotenv').config()
 
 const app = express()
 
@@ -25,6 +26,8 @@ async function db() {
     }
 }
 db()
+
+app.use('/api', expressJWT({ secret: process.env.SECRET, algorithms: ['HS256'] })) // req.user
 
 app.use((err, req, res, next) => {
     console.log(err)
