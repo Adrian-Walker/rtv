@@ -29,7 +29,7 @@ db()
 
 app.use('/auth', require('./routes/authRouter.js'))
 // app.use('/api/issue', require('./routes/issueRouter.js'))
-// app.use('/api/comment', require('./routes/commentRouter.js'))
+app.use('/api/comment', require('./routes/commentRouter.js'))
 app.use('/api', expressJWT({ secret: process.env.SECRET, algorithms: ['HS256'] })) // req.user
 
 app.use((err, req, res, next) => {
