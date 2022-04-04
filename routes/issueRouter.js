@@ -37,3 +37,38 @@ issueRouter.post("/", (req, res, next) => {
         return res.status(201).send(savedIssue)
     })
 })
+
+// Delete Issue
+issueRouter.delete("/:issueId", (req, res, next) => {
+    Issue.findOneAndDelete(
+        { _id: req.params.issueId },
+        (err, deletedIssue) => {
+            if (err) {
+                res.status(500)
+                return next(err)
+            }
+            return res.status(200).send(`${deletedIssue.title} has been deleted`)
+        }
+    )
+})
+
+// Upvote Issue
+issueRouter.put('/upvote/:issueId', (req, res, next) => {
+    Issue.findOneAndUpdate({ _id: req.params.issueId },
+        {
+            $inc: { upvote: 1 },
+            $push: {
+                votedUsers:
+                    { $each: [req.user.username] }
+            }
+        },
+        { new: true },
+        (err, updatedIssue) => {
+            if (err) {
+                res.status(500)
+                return next(err)
+            }
+            return res.status(201).send(updatedIssue)
+        }
+    )
+})
