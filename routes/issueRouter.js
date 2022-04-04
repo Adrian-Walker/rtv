@@ -72,3 +72,5 @@ issueRouter.put('/upvote/:issueId', (req, res, next) => {
         }
     )
 })
+
+module.exports = issueRouter
