@@ -27,11 +27,15 @@ async function db() {
 }
 db()
 
+
+// Middlewares
 app.use('/auth', require('./routes/authRouter.js'))
 app.use('/api/issue', require('./routes/issueRouter.js'))
 app.use('/api/comment', require('./routes/commentRouter.js'))
 app.use('/api', expressJWT({ secret: process.env.SECRET, algorithms: ['HS256'] })) // req.user
 
+
+// Error Handler
 app.use((err, req, res, next) => {
     console.log(err)
     if (err.name === "UnauthorizedError") {
@@ -41,7 +45,7 @@ app.use((err, req, res, next) => {
 })
 
 
-
+// Port
 app.listen(2000, () => {
     console.log('Running on port 2000');
 })
