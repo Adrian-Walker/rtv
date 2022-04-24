@@ -43,6 +43,7 @@ function IssueProvider(props) {
     function getUserIssues() {
         userAxios.get("/api/issue/user")
             .then(res => {
+                console.log(res)
                 Promise.all(res.data.map(async issue => {
                     return {
                         ...issue,
@@ -106,9 +107,10 @@ function IssueProvider(props) {
             .then(res => {
                 console.log(res.data)
                 setUserState(prevState => {
-                    console.log('prevState', prevState)
+                    // console.log('prevState', prevState)
                     const issues = prevState.issues.find((issue) => issue._id === res.data.issue);
                     issues.comments.push(res.data);
+                    console.log(res.data + 'Line 113 test')
                     return ({
                         ...prevState,
                     })

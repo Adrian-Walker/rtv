@@ -1,6 +1,18 @@
 const express = require('express');
 const issueRouter = express.Router();
 const Issue = require('../models/issue.js');
+const jwt = require("jsonwebtoken")
+
+function checkAuthToken(req, res, next) {
+    const token = req.headers.authorization;
+    if(!token) return res.status(400).send("No token provided")
+    const bearerToken = token.split("Bearer ")[1]
+    if(!bearerToken) return res.status(400).send("Token must be a Bearer Token")
+    const decodedToken = jwt.verify(bearerToken, process.env.SECRET)
+    req.user = decodedToken
+    console.log(decodedToken)
+    next()
+}
 
 // Get All Issues
 issueRouter.get("/", (req, res, next) => {
@@ -14,9 +26,11 @@ issueRouter.get("/", (req, res, next) => {
 })
 
 // Get Issue by user id
-issueRouter.get('/user', (req, res, next) => {
+issueRouter.get('/user', checkAuthToken, (req, res, next) => {
+    console.log(req.headers, "issue")
     Issue.find({ user: req.user._id }, (err, issue) => {
         if (err) {
+            console.log(req.user, "req.user")
             res.status(500)
             return next(err)
         }
@@ -25,7 +39,7 @@ issueRouter.get('/user', (req, res, next) => {
 })
 
 // Add new Issue
-issueRouter.post("/", (req, res, next) => {
+issueRouter.post("/", checkAuthToken, (req, res, next) => {
     req.body.user = req.user._id
     req.body.username = req.user.username
     const newIssue = new Issue(req.body)

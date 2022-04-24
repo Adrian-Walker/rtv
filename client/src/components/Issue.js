@@ -9,8 +9,9 @@ function Issue(props) {
     const { handleDelete, handleVote } = useContext(IssueContext)
 
     const { user } = useContext(UserContext)
+    console.log(props)
 
-    const postedBy = `Posted By: ${issue.username} on ${issue.postDate.slice(0, 10)} @ ${issue.postDate.slice(11, 16)}`
+    const postedBy = `Posted By: ${issue.username} on ${issue.dateCreated.slice(0, 10)} @ ${issue.dateCreated.slice(11, 16)}`
 
     function voting(vote, id, username) {
         const voted = issue.votedUsers.includes(username)
