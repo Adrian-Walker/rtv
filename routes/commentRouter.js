@@ -1,4 +1,6 @@
 const express = require("express")
+const { default: mongoose } = require("mongoose")
+const { checkAuthToken } = require("../middleware/checkAuth")
 const commentRouter = express.Router()
 const Comment = require('../models/comment')
 
@@ -25,9 +27,11 @@ commentRouter.get("/:issueId", (req, res, next) => {
 })
 
 // Add new comment
-commentRouter.post("/", (req, res, next) => {
+commentRouter.post("/:issueId", checkAuthToken, (req, res, next) => {
     req.body.user = req.user._id
     req.body.username = req.user.username
+    req.body.issue_id = req.params.issueId
+    if(!mongoose.Types.ObjectId.isValid(req.params.issueId)) return res.status(400).json({message: "Invalid mongoose Id"})
     const newComment = new Comment(req.body)
     newComment.save((err, savedComment) => {
         if (err) {

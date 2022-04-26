@@ -1,18 +1,11 @@
 const express = require('express');
+const { json } = require('express/lib/response');
+const { checkAuthToken } = require('../middleware/checkAuth.js');
 const issueRouter = express.Router();
 const Issue = require('../models/issue.js');
-const jwt = require("jsonwebtoken")
 
-function checkAuthToken(req, res, next) {
-    const token = req.headers.authorization;
-    if(!token) return res.status(400).send("No token provided")
-    const bearerToken = token.split("Bearer ")[1]
-    if(!bearerToken) return res.status(400).send("Token must be a Bearer Token")
-    const decodedToken = jwt.verify(bearerToken, process.env.SECRET)
-    req.user = decodedToken
-    console.log(decodedToken)
-    next()
-}
+
+
 
 // Get All Issues
 issueRouter.get("/", (req, res, next) => {
@@ -67,10 +60,14 @@ issueRouter.delete("/:issueId", (req, res, next) => {
 })
 
 // Upvote Issue
-issueRouter.put('/upvote/:issueId', (req, res, next) => {
+issueRouter.put('/vote/:issueId', checkAuthToken, async (req, res, next) => {
+    const voteType = req.query.voteType;
+    const issue = await Issue.findById(req.params.issueId)
+    if(!voteType) return res.status(400).json({messages: "Query of voteType must be added"})
+    if(issue.votedUsers.includes(req.user.username)) return res.status(400).json({message: "user already voted"})
     Issue.findOneAndUpdate({ _id: req.params.issueId },
         {
-            $inc: { upvote: 1 },
+            $inc: { [voteType]: 1 },
             $push: {
                 votedUsers:
                     { $each: [req.user.username] }
