@@ -7,19 +7,18 @@ function Comment(props) {
     const { setComments, addComment } = useContext(IssueContext)
     const [comment, setComment] = useState('')
 
-    const {
-        user: {
-            username
-        }
-    } = useContext(UserContext)
+    // const {
+    //     user: {
+    //         username
+    //     }
+    // } = useContext(UserContext)
 
     function handleChange(e) {
         const { name, value } = e.target
         setComments(prevInputs => ({
             ...prevInputs,
             [name]: value,
-            commenter: username,
-            issue: issueId
+            issue_id: issueId
         }))
         setComment(value)
     }
@@ -34,6 +33,7 @@ function Comment(props) {
             <input
                 type="text"
                 name="comment"
+                autoComplete='off'
                 value={comment}
                 onChange={handleChange}
                 placeholder="Comment" />

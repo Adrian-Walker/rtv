@@ -5,11 +5,9 @@ import Auth from "./components/Auth.js";
 import Profile from "./components/Profile.js";
 import Public from "./components/Public.js";
 import ProtectedRoute from "./components/ProtectedRoute";
-import { UserContext } from "./context/UserProvider.js";
 
 export default function App() {
-  const { token, logout } = useContext(UserContext);
-  console.log(token);
+
   return (
     <div className="app">
       <Router>
