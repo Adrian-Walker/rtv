@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { axiosInstance } from "../config";
 
 export const IssueContext = React.createContext();
 
-const userAxios = axios.create();
+const userAxios = axiosInstance.create();
 
 userAxios.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
